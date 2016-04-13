@@ -11,6 +11,7 @@
 		<p>Toggle <span id="labels"></span></p>
 		<table class="table table-striped table-hover sortable">
 			<thead>
+				<th>Repository</th>
 				<th>Issue</th>
 				<th data-defaultsort="desc">Due</th>
 				<th class="sorting-placeholder"></th>
@@ -18,6 +19,9 @@
 			<tbody>
 				{foreach $issues as $issue}
 					<tr>
+						<td>
+							{str_replace('https://api.github.com/repos/', '' , $issue['repository_url'])}
+						</td>
 						<td>
 							<h4><a href="{$issue['html_url']}">{$issue['title']}</a>
 							{foreach $issue['labels'] as $label}
