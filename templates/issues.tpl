@@ -1,48 +1,49 @@
-{assign var="issue_count" value=count($issues)}
-{assign var="plural" value="s"}
-{if $issue_count == 1}{$plural=""}{/if}
-{assign var="category" value="$issue_count Issue$plural"}
 {assign var="labels" value=array()}
-{extends file="subpage.tpl"}
+{extends file="page.tpl"}
 
-{block name="subcontent"}
+{block name="content"}
+
+	<div class="container page-header">
+		<h1>{$user} <small><span id="issue_count">{count($issues)}</span> Issues</small></h1>
+	</div>
 
 	<div class="container">
-		<p>Toggle <span id="labels"></span></p>
+		<p><span class="glyphicon glyphicon-filter"></span> <span id="labels"></span> <a href="javascript:github_dashboard.clearFilters();" class="btn btn-xs btn-default pull-right">Clear Filters</a></p>
 		<table class="table table-striped table-hover sortable">
 			<thead>
 				<th>Repository</th>
 				<th>Issue</th>
-				<th data-defaultsort="desc">Due</th>
-				<th class="sorting-placeholder"></th>
+				<th>Comments</th>
+				<th data-firstsort="desc">Due Date</th>
 			</thead>
 			<tbody>
 				{foreach $issues as $issue}
+					{assign var="repository" value=str_replace('https://api.github.com/repos/', '' , $issue['repository_url'])}
 					<tr>
-						<td>
-							{str_replace('https://api.github.com/repos/', '' , $issue['repository_url'])}
+						<td class="sorting-placeholder">
+							{$repository}
 						</td>
-						<td>
-							<h4><a href="{$issue['html_url']}">{$issue['title']}</a>
-							{foreach $issue['labels'] as $label}
-								{if empty($labels[$label['name']])}
-									{$labels[$label['name']] = "'{$label['name']}':'#{$label['color']}'"}
-								{/if}
-								<span class="label label-{$label['name']}" style="background-color: #{$label['color']};">{$label['name']}</span>
-							{/foreach}</h4>
-							<p>#{$issue['number']} opened {$issue['created_at']|date_format:'F, j Y'} by {$issue['user']['login']}{if !empty($issue['milestone'])} in milestone <a href="{$issue['milestone']['html_url']}">{$issue['milestone']['title']}</a>{/if}</p>
+						<td colspan="2">
+							<h4>
+								<a target="_blank" href="{$issue['html_url']}">{$issue['title']}</a>
+								{foreach $issue['labels'] as $label}
+									{if empty($labels[$label['name']])}
+										{$labels[$label['name']] = "'{$label['name']}':'#{$label['color']}'"}
+									{/if}
+									<a href="javascript:github_dashboard.filter('label', '{$label['name']}');" class="label label-{preg_replace('/[^a-zA-Z0-9_\-]+/', '-', $label['name'])}" style="background-color: #{$label['color']};">{$label['name']}</a>
+								{/foreach}
+							</h4>
+							<h5 class="repository"><a target="_blank" href="https://github.com/{$repository}">{$repository}</a> {filterAndRemoveButtons('repository', $repository)}</h5>
+							<p>#{$issue['number']} opened {$issue['created_at']|date_format:'F, j Y'} by <span class="user">{$issue['user']['login']} {filterAndRemoveButtons('user', $issue['user']['login'])}</span>{if !empty($issue['milestone'])} in milestone <a target="_blank" href="{$issue['milestone']['html_url']}" class="milestone">{$issue['milestone']['title']}</a> {filterAndRemoveButtons('milestone', $issue['milestone']['title'])}{else}<span class="milestone"></span>{/if}</p>
 						</td>
-						{if empty($issue['milestone']['due_on'])}
-							<td class="sorting-placeholder"></td>
-							<td></td>
-						{else}
-							<td data-dateformat="Y-m-d" class="sorting-placeholder">
-								{$issue['milestone']['due_on']|date_format:'Y-m-d'}
-							</td>
-							<td>
-								{$issue['milestone']['due_on']|date_format:'l, F j, Y'|default:''}
-							</td>
-						{/if}
+						<td class="comments">
+							<span class="glyphicon glyphicon-comment"></span> {$issue['comments']}
+						</td>
+						<td data-value="{$issue['milestone']['due_on']|date_format:'Y-m-d'|default:''}" class="due_date">
+							{assign var="due_date" value=$issue['milestone']['due_on']|date_format:'l, F j, Y'|default:'n/a'}
+							<span{if $due_date == 'n/a'} class="sorting-placeholder"{/if}>{$due_date}</span>
+							{filterAndRemoveButtons('due_date', $due_date)}
+						</td>
 					</tr>
 				{/foreach}
 			</tbody>
@@ -53,26 +54,11 @@
 
 {block name="post-bootstrap-scripts"}
 
+	<script src="js/issues.js"></script>
 	<script>
 		
-		var labelVisible = { {implode(',', $labels)} };
+		github_dashboard.buildLabelList({ {implode(' , ', $labels)} });
 		
-		function toggleLabel(label) {
-			if (labelVisible[label]) {
-				$('tr:has(span.label-' + label + ')').hide(500);
-				labelVisible[label] = false;
-			} else {
-				$('tr:has(span.label-' + label + ')').show(500);
-				labelVisible[label] = true;
-			}
-		}
-		
-		var labels = { {implode(',', $labels)} };
-		for (var c in labels) {
-			if(labels.hasOwnProperty(c)) {
-				$('#labels').append(' <span class="label label-default" style="background-color: ' + labels[c] + ';"><a href="javascript:toggleLabel(\'' + c + '\');">' + c + '</></span>');
-			}
-		}
 	</script>
 
 {/block}

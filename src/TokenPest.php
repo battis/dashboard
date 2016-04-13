@@ -1,6 +1,6 @@
 <?php
 
-namespace Battis\GitHubIssueTracker;
+namespace Battis\GitHubDashboard;
 
 use Pest;
 	

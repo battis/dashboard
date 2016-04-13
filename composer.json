@@ -1,5 +1,5 @@
 {
-    "name": "battis/github-issue-tracker",
+    "name": "battis/github-dashboard",
     "description": "A dashboard for tracking my GitHub issues",
     "require": {
         "battis/bootstrapsmarty": "dev-develop",
@@ -16,7 +16,7 @@
     "minimum-stability": "dev",
     "autoload": {
 	    "psr-4": {
-		    "Battis\\GitHubIssueTracker\\": "src/"
+		    "Battis\\GitHubDashboard\\": "src/"
 	    }
     }
 }

@@ -29,5 +29,19 @@ try {
 
 }
 
+function filterButton($facet, $value) {
+	return "<a href=\"javascript:github_dashboard.filter('$facet', '$value');\"><span class=\"glyphicon glyphicon-filter\"></span></a>";
+}
+
+function removeButton($facet, $value) {
+	return "<a href=\"javascript:github_dashboard.remove('$facet', '$value');\"><span class=\"glyphicon glyphicon-remove\"></span></a>";
+}
+
+function filterAndRemoveButtons($facet, $value) {
+	return filterButton($facet, $value) . ' ' . removeButton($facet, $value);
+}
+
+$smarty->assign('user', $secrets->toArray('//github/user')[0][0]);
 $smarty->assign('issues', $issues);
+$smarty->assign('category', count($issues) . ' Issue' . (count($issues) == 1 ? '' : 's'));
 $smarty->display('issues.tpl');
