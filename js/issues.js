@@ -1,21 +1,21 @@
 var github_dashboard = {
-	labelVisible: [],
-	
-	buildLabelList: function(labels) {
-		var name;
-		
-		for (name in labels) {
-			if(labels.hasOwnProperty(name)) {
-				$('#labels').append(' <a class="label label-' + this.canonical(name) + '" style="background-color: ' + labels[name] + ';" href="javascript:github_dashboard.filter(\'label\', \'' + name + '\');">' + name + '</a>');
-				this.labelVisible[name] = true;
+	buildLabelList: function() {
+		$('#labels').empty();
+		$('tbody h4 .label:visible').each(function() {
+			var classes = $(this).attr('class').split(' ');
+			if ($('#labels .' + classes[1]).length == 0) {
+				$('#labels').append(
+					' <a class="' + $(this).attr('class') + '" style="background-color: ' + $(this).css('background-color') + ';" href="javascript:github_dashboard.filter(\'label\', \'' + $(this).text() + '\');">' +
+						$(this).text() +
+					'</a>'
+				);
 			}
-		}
+		});
+		$('#labels .label').each(function() {
+			$(this).text($(this).text() + ' (' + $('tbody .' + $(this).attr('class').replace(' ', '.') + ':visible').length + ')');
+		});
 	},
 	
-	canonical: function(raw) {
-		return raw.replace(/[^a-zA-Z0-9_\-]+/, '-');
-	},
-		
 	filter: function(facet, value) {
 		$('tbody tr:has(.' + facet + ':not(:contains(' + value + '))):not(:has(.' + facet + ':contains(' + value + '))):visible').hide();
 		this.updateCount();
@@ -33,5 +33,8 @@ var github_dashboard = {
 	
 	updateCount: function() {
 		$('#issue_count').text($('tbody tr:visible').length);
+		this.buildLabelList();
 	}
 };
+
+$(github_dashboard.updateCount());

@@ -2,6 +2,8 @@
 	
 require_once 'common.inc.php';
 
+use \Michelf\Markdown;
+
 $issues = array();
 try {
 
@@ -30,15 +32,29 @@ try {
 }
 
 function filterButton($facet, $value) {
-	return "<a href=\"javascript:github_dashboard.filter('$facet', '$value');\"><span class=\"glyphicon glyphicon-filter\"></span></a>";
+	return "<small><a href=\"javascript:github_dashboard.filter('$facet', '$value');\"><span class=\"glyphicon glyphicon-filter\"></span></a></small>";
 }
 
 function removeButton($facet, $value) {
-	return "<a href=\"javascript:github_dashboard.remove('$facet', '$value');\"><span class=\"glyphicon glyphicon-remove\"></span></a>";
+	return "<small><a href=\"javascript:github_dashboard.remove('$facet', '$value');\"><span class=\"glyphicon glyphicon-remove\"></span></a></small>";
 }
 
 function filterAndRemoveButtons($facet, $value) {
 	return filterButton($facet, $value) . ' ' . removeButton($facet, $value);
+}
+
+function toggleButton($id) {
+	return "<small><a
+		id=\"toggle-$id\"
+		href=\"#body-$id\"
+		role=\"button\"
+		data-toggle=\"collapse\"
+		aria-expanded=\"false\"
+		aria-controls=\"body-$id\"><span class=\"glyphicon glyphicon-triangle-right\"></span></a></small>";
+}
+
+function parseMarkdown($markdown) {
+	return Markdown::defaultTransform($markdown);
 }
 
 $smarty->assign('user', $secrets->toArray('//github/user')[0][0]);

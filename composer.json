@@ -4,7 +4,8 @@
     "require": {
         "battis/bootstrapsmarty": "dev-develop",
         "educoder/pest": "dev-master",
-        "battis/configxml": "~1.0"
+        "battis/configxml": "~1.0",
+        "michelf/php-markdown": "^1.6"
     },
     "license": "GPL-3.0",
     "authors": [
