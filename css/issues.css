@@ -5,3 +5,11 @@ body {
 .sorting-placeholder {
 	display: none;
 }
+
+.label-wrapper {
+	margin-right: 0.25em;
+}
+
+.label-wrapper small a {
+	margin: 0 0.1em 0px 0.1em;
+}

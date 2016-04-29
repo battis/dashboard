@@ -8,7 +8,6 @@
 
 	<div class="container">
 		<p>
-			<span class="glyphicon glyphicon-filter"></span>
 			<span id="labels"></span>
 			<a href="javascript:github_dashboard.clearFilters();" id="clear-filters" class="btn btn-xs btn-default pull-right">
 				Clear Filters
@@ -42,10 +41,14 @@
 									{$issue['title']}
 								</a>
 								{foreach $issue['labels'] as $label}
-									<a
-										href="javascript:github_dashboard.filter('label', '{$label['name']}');"
-										class="label label-{preg_replace('/[^a-zA-Z0-9_\-]+/', '-', $label['name'])}"
-										style="background-color: #{$label['color']};">{$label['name']}</a>
+									<span class="label-wrapper">
+										<span
+											class="label label-{preg_replace('/[^a-zA-Z0-9_\-]+/', '-', $label['name'])}"
+											style="background-color: #{$label['color']};">
+											{$label['name']}
+										</span>
+										{filterAndRemoveButtons('label', $label['name'])}
+									</span>
 								{/foreach}
 							</h4>
 							<h5>

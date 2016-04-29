@@ -40,7 +40,7 @@ function removeButton($facet, $value) {
 }
 
 function filterAndRemoveButtons($facet, $value) {
-	return filterButton($facet, $value) . ' ' . removeButton($facet, $value);
+	return filterButton($facet, $value) . removeButton($facet, $value);
 }
 
 function toggleButton($id) {

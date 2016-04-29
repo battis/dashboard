@@ -5,9 +5,13 @@ var github_dashboard = {
 			var classes = $(this).attr('class').split(' ');
 			if ($('#labels .' + classes[1]).length == 0) {
 				$('#labels').append(
-					' <a class="' + $(this).attr('class') + '" style="background-color: ' + $(this).css('background-color') + ';" href="javascript:github_dashboard.filter(\'label\', \'' + $(this).text() + '\');">' +
-						$(this).text() +
-					'</a>'
+					'<span class="label-wrapper">' +
+						'<span class="' + $(this).attr('class') + '" style="background-color: ' + $(this).css('background-color') + ';">' +
+							$(this).text() +
+						'</span>' +
+						'<small><a href=\"javascript:github_dashboard.filter(\'label\', \'' + $(this).text() + '\');\"><span class=\"glyphicon glyphicon-filter\"></span></a></small>' +
+						'<small><a href=\"javascript:github_dashboard.remove(\'label\', \'' + $(this).text() + '\');\"><span class=\"glyphicon glyphicon-remove\"></span></a></small>' +
+					'</span>'
 				);
 			}
 		});
